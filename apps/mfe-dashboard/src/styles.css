@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  font-family: 'Inter', 'Noto Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  @apply bg-surface text-slate-900 dark:bg-slate-900 dark:text-slate-100;
+}
+
+.animated-gradient {
+  background: linear-gradient(45deg, #10b981, #06b6d4, #2563eb, #8b5cf6);
+  background-size: 400% 400%;
+  animation: gradientFlow 10s ease infinite;
+}
+
+.active {
+  background: linear-gradient(45deg, #10b981, #06b6d4, #2563eb, #8b5cf6);
+  background-size: 400% 400%;
+  animation: gradientFlow 10s ease infinite;
+  border-radius: 0.5rem;
+  --active-shift: 0px;
+}
+
+.active > * {
+  transition: transform 250ms ease;
+  transform: translateX(var(--active-shift));
+}
+
+.active p,
+.active svg {
+  color: #ffffff !important;
+}
+
+.card-shadow {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.border-gradient {
+  border: 2px solid transparent;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  background-image: linear-gradient(to right, white, white), linear-gradient(45deg, #fde047, #f43f5e, #9d174d);
+}
+
+.table-fixed-wrap {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table-fixed-wrap th,
+.table-fixed-wrap td {
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

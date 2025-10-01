@@ -1,0 +1,58 @@
+import { NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+import { NAV_ITEMS } from '../navigation';
+import { HeaderComponent } from './header.component';
+import { SidebarComponent } from './sidebar.component';
+
+@Component({
+  selector: 'app-shell-layout',
+  standalone: true,
+  imports: [HeaderComponent, SidebarComponent, RouterOutlet, NgIf],
+  template: `
+    <div class="relative flex min-h-screen w-full flex-col bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-slate-900 transition-colors dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 dark:text-slate-100">
+      <div class="flex h-full grow flex-col">
+        <app-header (menuToggle)="toggleSidebar()"></app-header>
+
+        <div class="flex flex-1 gap-4 px-6 py-5">
+          <app-sidebar
+            class="hidden w-80 lg:block"
+            [items]="navItems"
+          ></app-sidebar>
+
+          <div class="flex min-h-[700px] flex-1 flex-col rounded-3xl bg-white/60 px-4 py-8 card-shadow backdrop-blur-sm dark:bg-slate-900/70">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="mobileSidebarOpen()" class="fixed inset-0 z-50 flex lg:hidden">
+        <div class="absolute inset-0 bg-slate-900/40" (click)="toggleSidebar(false)" aria-hidden="true"></div>
+        <div class="relative h-full w-72 max-w-[80%] p-4">
+          <app-sidebar
+            class="h-full w-full"
+            [items]="navItems"
+            [mobileOpen]="true"
+            (closeMenu)="toggleSidebar(false)"
+          ></app-sidebar>
+        </div>
+      </div>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class ShellLayoutComponent {
+  readonly navItems = NAV_ITEMS;
+  readonly mobileSidebarOpen = signal(false);
+
+  toggleSidebar(force?: boolean): void {
+    if (force === true) {
+      this.mobileSidebarOpen.set(true);
+    } else if (force === false) {
+      this.mobileSidebarOpen.set(false);
+    } else {
+      this.mobileSidebarOpen.update((value) => !value);
+    }
+  }
+}

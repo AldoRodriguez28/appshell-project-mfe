@@ -3,6 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -13,7 +14,12 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "paths": {
+      "@appshell/ui": [
+        "libs/ui/src/public-api"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -22,5 +28,43 @@
     "typeCheckHostBindings": true,
     "strictTemplates": true
   },
-  "files": []
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/app-shell/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/app-shell/tsconfig.spec.json"
+    },
+    {
+      "path": "./apps/mfe-dashboard/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/mfe-dashboard/tsconfig.spec.json"
+    },
+    {
+      "path": "./apps/mfe-tasks/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/mfe-tasks/tsconfig.spec.json"
+    },
+    {
+      "path": "./apps/mfe-iam/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/mfe-iam/tsconfig.spec.json"
+    },
+    {
+      "path": "./apps/mfe-marketing/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/mfe-marketing/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/ui/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/ui/tsconfig.spec.json"
+    }
+  ]
 }

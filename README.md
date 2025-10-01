@@ -1,59 +1,101 @@
-# Appshell
+# AppShell Monorepo
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.3.
+Monorepo Angular que orquesta un shell y cuatro microfrontends (dashboard, tareas, IAM y marketing) usando Native Federation y TailwindCSS.
 
-## Development server
+## Requisitos previos
 
-To start a local development server, run:
+- Node.js ^20.19 o ^22.12 (Native Federation y CLI lo requieren)
+- npm 10+
 
-```bash
-ng serve
-```
+## Proyectos incluidos
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+| Proyecto | Tipo | Puerto dev | Descripción |
+| --- | --- | --- | --- |
+| `app-shell` | Host | `4200` | Layout principal con header, sidebar, theming y carga diferida de remotes. |
+| `mfe-dashboard` | Remote | `4300` | KPI y actividad reciente. |
+| `mfe-tasks` | Remote | `4301` | Tabla de tareas mock. |
+| `mfe-iam` | Remote | `4302` | Gestión de usuarios y roles. |
+| `mfe-marketing` | Remote | `4303` | Campañas y métricas de marketing. |
+| `ui` | Librería | — | Iconos, cards, botones y skeletons compartidos. |
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Scripts principales
 
 ```bash
-ng generate --help
+npm run serve:shell       # http://localhost:4200
+npm run serve:dashboard   # http://localhost:4300
+npm run serve:tasks       # http://localhost:4301
+npm run serve:iam         # http://localhost:4302
+npm run serve:marketing   # http://localhost:4303
+
+npm run build:shell       # build host
+npm run build:dashboard   # build remote dashboard
+# ... build:tasks, build:iam, build:marketing
+
+npm run test              # tests del shell (ChromeHeadless)
+# ... test:dashboard, test:tasks, test:iam, test:marketing
+
+npm run lint              # ESLint (todas las apps)
 ```
 
-## Building
+Levanta cada remote en su terminal y arranca el shell para verlos montados. Las rutas `/dashboard`, `/tasks`, `/iam` y `/marketing` cargan cada MFE de forma lazy e incluyen skeleton + fallback ante errores de carga.
 
-To build the project run:
+## Federación nativa
 
-```bash
-ng build
-```
+- Configurada con `@angular-architects/native-federation` (esbuild).
+- Remotes expuestos como `RemoteEntryComponent` en `federation.config.js`.
+- El host inicializa con `initFederation(environment.remotes)`.
+- Puedes sobreescribir URLs en producción definiendo `window.__appShellRemotes__ = { 'mfe-dashboard': 'https://.../remoteEntry.json', ... };` antes de cargar el bundle.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+> **Cambiar a Module Federation (webpack)**: reemplaza `@angular-architects/native-federation` por `@angular-architects/module-federation`, reconfigura `angular.json` para usar el builder webpack y ajusta los `module-federation.config.js`. El README mantiene esta nota como referencia.
 
-## Running unit tests
+## Tailwind & UI
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+- Tailwind configurado globalmente (`tailwind.config.js`, `postcss.config.cjs`).
+- `@tailwind` directives añadidas a los estilos de cada app.
+- Librería `@appshell/ui` expone `IconComponent`, `CardComponent`, `ButtonComponent` y `SkeletonComponent` reutilizados por shell y remotes.
+- Google Material Symbols enlazados en todos los `index.html`. Usa `<ui-icon name="menu"></ui-icon>` para renderizar iconos accesibles.
 
-```bash
-ng test
-```
+## Añadir un nuevo microfrontend
 
-## Running end-to-end tests
+1. Genera la app:
+   ```bash
+   ng g application mfe-reports --project-root=apps/mfe-reports --standalone --routing --style=css
+   ```
+2. Ejecuta:
+   ```bash
+   node ./node_modules/@angular/cli/bin/ng add @angular-architects/native-federation --project mfe-reports --type=remote --port 4304
+   ```
+3. Crea `remote-entry/remote-entry.component.ts` y expórtalo en `federation.config.js` (`'./Component': './apps/mfe-reports/src/app/remote-entry/remote-entry.component.ts'`).
+4. Implementa el contenido y un test similar a los remotes existentes.
+5. Agrega scripts en `package.json` (`serve:reports`, `build:reports`).
+6. Actualiza `environment.development.ts` y `environment.ts` con la nueva URL y el host `app.routes.ts` con `remoteRoute('reports', 'mfe-reports', 'Reports', 'analytics')`.
 
-For end-to-end (e2e) testing, run:
+Tiempo estimado: < 5 minutos siguiendo los pasos.
 
-```bash
-ng e2e
-```
+## Añadir elementos compartidos
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- Crea componentes en `libs/ui/src/lib/<nombre>/<nombre>.component.ts` y exporta desde `libs/ui/src/public-api.ts`.
+- Usa `@appshell/ui` para importarlos en shell o remotes.
 
-## Additional Resources
+## Versionar contratos compartidos
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Centraliza interfaces en `libs/ui` (o crea una librería `libs/contracts` si crecen).
+- Versiona cambios usando `CHANGELOG` o etiquetas en git. Al actualizar un contrato, incrementa la versión del paquete (si publicas) o documenta el cambio en el README.
+
+## Testing
+
+- Cada remote incluye un `remote-entry.component.spec.ts` que valida el render inicial.
+- Ejecuta pruebas con `npm run test -- --browsers=ChromeHeadless` (requiere Chrome o Chromium). Si no cuentas con un navegador headless instalado, puedes instalar `chromium` o ajustar Karma para usar `FirefoxHeadless`.
+
+## Theming y accesibilidad
+
+- `ThemeService` persiste el modo claro/oscuro y aplica la clase `dark` al `<html>`.
+- Navegación lateral con `aria-current="page"`, botones con `aria-label`, foco visible y layout responsive (`md` colapsable, `lg` fijo).
+
+## Troubleshooting
+
+- **CORS / URLs remotas**: verifica los remotes registrados en `environment.(development).ts` o sobreescribe `window.__appShellRemotes__`.
+- **Native Federation en entornos legacy**: si necesitas Webpack Module Federation, sigue las instrucciones en la sección anterior.
+- **Node versión no soportada**: actualiza a la versión indicada arriba para evitar errores de CLI/esbuild.
+
+¡Feliz hacking! ✨

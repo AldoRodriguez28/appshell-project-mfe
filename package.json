@@ -3,10 +3,24 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "start": "npm run serve:shell",
+    "serve:shell": "ng serve app-shell",
+    "serve:dashboard": "ng serve mfe-dashboard",
+    "serve:tasks": "ng serve mfe-tasks",
+    "serve:iam": "ng serve mfe-iam",
+    "serve:marketing": "ng serve mfe-marketing",
+    "build": "npm run build:shell",
+    "build:shell": "ng build app-shell",
+    "build:dashboard": "ng build mfe-dashboard",
+    "build:tasks": "ng build mfe-tasks",
+    "build:iam": "ng build mfe-iam",
+    "build:marketing": "ng build mfe-marketing",
+    "test": "ng test app-shell --watch=false --browsers=ChromeHeadless",
+    "test:dashboard": "ng test mfe-dashboard --watch=false --browsers=ChromeHeadless",
+    "test:tasks": "ng test mfe-tasks --watch=false --browsers=ChromeHeadless",
+    "test:iam": "ng test mfe-iam --watch=false --browsers=ChromeHeadless",
+    "test:marketing": "ng test mfe-marketing --watch=false --browsers=ChromeHeadless",
+    "lint": "ng lint"
   },
   "prettier": {
     "printWidth": 100,
@@ -22,25 +36,36 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^20.3.0",
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
     "@angular/core": "^20.3.0",
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@softarc/native-federation-node": "^2.0.10",
+    "es-module-shims": "^1.5.12",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
+    "@angular-architects/native-federation": "^20.1.6",
+    "@angular-devkit/build-angular": "^20.3.3",
+    "@angular/build": "^20.3.3",
     "@angular/cli": "^20.3.3",
     "@angular/compiler-cli": "^20.3.0",
     "@types/jasmine": "~5.1.0",
+    "autoprefixer": "^10.4.21",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-packagr": "^20.3.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.15",
     "typescript": "~5.9.2"
   }
 }

@@ -1,0 +1,9 @@
+<div class="flex flex-wrap gap-6 pb-8">
+  <div
+    *ngFor="let metric of metrics; trackBy: metricTrack"
+    class="flex min-w-[180px] flex-1 flex-col gap-3 rounded-3xl bg-white/60 p-6 card-shadow backdrop-blur-sm dark:bg-slate-900/70">
+    <p class="text-lg font-semibold leading-normal text-slate-700 dark:text-slate-200">{{ metric.title }}</p>
+    <p class="text-4xl font-black leading-tight tracking-tighter text-slate-800 dark:text-white">{{ metric.value }}</p>
+    <p class="text-lg font-bold leading-normal" [ngClass]="trendClass(metric.trendColor)">{{ metric.trend }}</p>
+  </div>
+</div>

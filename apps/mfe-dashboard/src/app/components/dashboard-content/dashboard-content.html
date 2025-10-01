@@ -1,0 +1,11 @@
+<section class="flex flex-col gap-8">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <p class="min-w-72 text-4xl font-extrabold leading-tight tracking-tight text-slate-800 dark:text-white">
+      Dashboard
+    </p>
+  </div>
+
+  <app-metrics-grid [metrics]="metrics"></app-metrics-grid>
+
+  <app-orders-table [orders]="orders"></app-orders-table>
+</section>

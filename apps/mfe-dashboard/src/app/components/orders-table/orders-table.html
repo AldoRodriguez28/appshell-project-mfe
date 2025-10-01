@@ -1,0 +1,48 @@
+<div class="rounded-3xl bg-white/60 px-4 py-4 card-shadow backdrop-blur-sm dark:bg-slate-900/70">
+  <div class="overflow-hidden rounded-2xl">
+    <table class="table-fixed-wrap w-full">
+      <colgroup>
+        <col class="w-1/2">
+        <col class="w-1/6">
+        <col class="w-1/6">
+        <col class="w-1/6">
+      </colgroup>
+      <thead>
+        <tr class="bg-transparent">
+          <th class="px-6 py-4 text-left text-base font-semibold leading-normal text-slate-800 dark:text-slate-100">
+            Cliente
+          </th>
+          <th class="px-6 py-4 text-center text-base font-semibold leading-normal text-slate-800 dark:text-slate-100">
+            Estatus
+          </th>
+          <th class="px-6 py-4 text-center text-base font-semibold leading-normal text-slate-800 dark:text-slate-100">
+            Folio
+          </th>
+          <th class="px-6 py-4 text-center text-base font-semibold leading-normal text-slate-800 dark:text-slate-100">
+            Fecha
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders; trackBy: trackOrder" class="border-t border-slate-200/50 dark:border-slate-700/60">
+          <td class="px-6 py-3 text-left text-base font-normal leading-normal text-slate-700 dark:text-slate-200">
+            {{ order.customer }}
+          </td>
+          <td class="px-6 py-3 text-center">
+            <button
+              class="flex h-10 w-full min-w-[84px] max-w-[220px] items-center justify-center overflow-hidden rounded-full px-4 text-base font-medium leading-normal transition" type="button"
+              [ngClass]="statusClasses(order)">
+              <span class="truncate">{{ order.status }}</span>
+            </button>
+          </td>
+          <td class="px-6 py-3 text-center text-base font-normal leading-normal text-slate-500 dark:text-slate-400">
+            {{ order.folio }}
+          </td>
+          <td class="px-6 py-3 text-center text-base font-normal leading-normal text-slate-600 dark:text-slate-300">
+            {{ order.date }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
