@@ -1,0 +1,34 @@
+<section class="space-y-6">
+  <header class="flex flex-col gap-2">
+    <h1 class="text-2xl font-semibold text-slate-900 dark:text-white">Identity &amp; Access</h1>
+    <p class="text-sm text-slate-500 dark:text-slate-300">
+      Controla roles, accesos y estados de las cuentas.
+    </p>
+  </header>
+
+  <ui-card title="Miembros" subtitle="4 roles activos">
+    <ul class="divide-y divide-slate-200 dark:divide-slate-700">
+      <li *ngFor="let member of members" class="flex flex-col gap-3 py-3 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-200">
+            <ui-icon name="person" size="sm"></ui-icon>
+          </span>
+          <div>
+            <p class="font-medium text-slate-900 dark:text-white">{{ member.name }}</p>
+            <p class="text-xs text-slate-500 dark:text-slate-300">{{ member.email }}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-200">
+            <ui-icon name="workspace_premium" size="sm"></ui-icon>
+            {{ member.role }}
+          </span>
+          <span class="text-xs text-slate-400">
+            <ui-icon [name]="member.status === 'Activo' ? 'verified' : 'pending'" size="sm"></ui-icon>
+            {{ member.status }}
+          </span>
+        </div>
+      </li>
+    </ul>
+  </ui-card>
+</section>

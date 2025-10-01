@@ -5,16 +5,8 @@ import { NgClass } from '@angular/common';
   selector: 'ui-button',
   standalone: true,
   imports: [NgClass],
-  template: `
-    <button
-      type="button"
-      class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-      [ngClass]="variantClasses"
-      [attr.aria-label]="ariaLabel"
-    >
-      <ng-content />
-    </button>
-  `,
+  templateUrl: './button.component.html',
+  styleUrls: ['./button.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ButtonComponent {

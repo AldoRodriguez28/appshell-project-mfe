@@ -1,0 +1,115 @@
+<header class="relative z-40 flex items-center justify-between whitespace-nowrap px-6 py-5 backdrop-blur-sm bg-white/80 dark:bg-slate-900/70 lg:px-10">
+  <button
+    type="button"
+    class="inline-flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 dark:text-slate-300 dark:hover:bg-slate-800 lg:hidden"
+    aria-label="Abrir menú de navegación"
+    (click)="menuToggle.emit()"
+  >
+    <ui-icon name="menu"></ui-icon>
+  </button>
+
+  <div class="flex items-center gap-4 text-slate-800 dark:text-slate-200">
+    <div class="size-6 text-blue-600 dark:text-blue-400">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M13.8261 17.4264C16.7203 18.1174 20.2244 18.5217 24 18.5217C27.7756 18.5217 31.2797 18.1174 34.1739 17.4264C36.9144 16.7722 39.9967 15.2331 41.3563 14.1648L24.8486 40.6391C24.4571 41.267 23.5429 41.267 23.1514 40.6391L6.64374 14.1648C8.00331 15.2331 11.0856 16.7722 13.8261 17.4264Z"
+          fill="currentColor"></path>
+        <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M39.998 12.236C39.9944 12.2537 39.9875 12.2845 39.9748 12.3294C39.9436 12.4399 39.8949 12.5741 39.8346 12.7175C39.8168 12.7597 39.7989 12.8007 39.7813 12.8398C38.5103 13.7113 35.9788 14.9393 33.7095 15.4811C30.9875 16.131 27.6413 16.5217 24 16.5217C20.3587 16.5217 17.0125 16.131 14.2905 15.4811C12.0012 14.9346 9.44505 13.6897 8.18538 12.8168C8.17384 12.7925 8.16216 12.767 8.15052 12.7408C8.09919 12.6249 8.05721 12.5114 8.02977 12.411C8.00356 12.3152 8.00039 12.2667 8.00004 12.2612C8.00004 12.261 8 12.2607 8.00004 12.2612C8.00004 12.2359 8.0104 11.9233 8.68485 11.3686C9.34546 10.8254 10.4222 10.2469 11.9291 9.72276C14.9242 8.68098 19.1919 8 24 8C28.8081 8 33.0758 8.68098 36.0709 9.72276C37.5778 10.2469 38.6545 10.8254 39.3151 11.3686C39.9006 11.8501 39.9857 12.1489 39.998 12.236ZM4.95178 15.2312L21.4543 41.6973C22.6288 43.5809 25.3712 43.5809 26.5457 41.6973L43.0534 15.223C43.0709 15.1948 43.0878 15.1662 43.104 15.1371C43.1276 15.094 43.2062 14.9455 43.244 14.8701C43.319 14.7208 43.4196 14.511 43.5217 14.2683C43.6901 13.8679 44 13.0689 44 12.2609C44 10.5573 43.003 9.22254 41.8558 8.2791C40.6947 7.32427 39.1354 6.55361 37.385 5.94477C33.8654 4.72057 29.133 4 24 4C18.867 4 14.1346 4.72057 10.615 5.94478C8.86463 6.55361 7.30529 7.32428 6.14419 8.27911C4.99695 9.22255 3.99999 10.5573 3.99999 12.2609C3.99999 13.1275 4.29264 13.9078 4.49321 14.3607C4.60375 14.6102 4.71348 14.8196 4.79687 14.9689C4.83898 15.0444 4.87547 15.1065 4.9035 15.1529C4.91754 15.1762 4.92954 15.1957 4.93916 15.2111L4.94662 15.223L4.95178 15.2312ZM35.9868 18.996L24 38.22L12.0131 18.996C12.4661 19.1391 12.9179 19.2658 13.3617 19.3718C16.4281 20.1039 20.0901 20.5217 24 20.5217C27.9099 20.5217 31.5719 20.1039 34.6383 19.3718C35.082 19.2658 35.5339 19.1391 35.9868 18.996Z"
+          fill="currentColor"></path>
+      </svg>
+    </div>
+    <h2 class="text-xl font-extrabold leading-tight tracking-[-0.015em]">SACOM</h2>
+  </div>
+
+  <div class="flex flex-1 justify-end gap-6">
+    <label class="flex h-10 min-w-40 max-w-64 flex-col">
+      <div class="flex w-full flex-1 items-stretch rounded-full bg-white/50 p-2 shadow-inner backdrop-blur-sm dark:bg-slate-800/70 dark:text-slate-100">
+        <div class="flex items-center justify-center pl-2 text-slate-500 dark:text-slate-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+          </svg>
+        </div>
+        <input
+          [(ngModel)]="query"
+          type="search"
+          name="search"
+          placeholder="Search..."
+          class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-full border-none bg-transparent px-3 text-base font-normal leading-normal text-slate-700 placeholder:text-slate-400 focus:outline-0 focus:ring-0 dark:text-slate-100" />
+      </div>
+    </label>
+
+    <button
+      type="button"
+      class="flex h-10 min-w-0 items-center justify-center gap-2 overflow-hidden rounded-full bg-white/50 px-4 text-base font-bold leading-normal tracking-[0.015em] text-slate-700 shadow-md transition-colors hover:bg-white/70 dark:bg-slate-800/70 dark:text-slate-100"
+      aria-label="Anuncios"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46" />
+      </svg>
+    </button>
+
+    <button
+      type="button"
+      class="flex h-10 min-w-0 items-center justify-center gap-2 overflow-hidden rounded-full bg-white/50 px-4 text-base font-bold leading-normal tracking-[0.015em] text-slate-700 shadow-md transition-colors hover:bg-white/70 dark:bg-slate-800/70 dark:text-slate-100"
+      aria-label="Notificaciones"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+        <path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
+      </svg>
+    </button>
+
+    <div #menuWrapper class="relative" [class.z-50]="panelOpen()">
+      <button
+        type="button"
+        (click)="togglePanel($event)"
+        aria-haspopup="true"
+        [attr.aria-expanded]="panelOpen()"
+        class="flex h-10 min-w-0 items-center justify-center gap-2 overflow-hidden rounded-full bg-white/50 px-4 text-base font-bold leading-normal tracking-[0.015em] text-slate-700 shadow-md transition-colors hover:bg-white/70 dark:bg-slate-800/70 dark:text-slate-100"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M3.75 6.75A2.25 2.25 0 0 1 6 4.5h1.5A2.25 2.25 0 0 1 9.75 6.75V8.25A2.25 2.25 0 0 1 7.5 10.5H6A2.25 2.25 0 0 1 3.75 8.25V6.75Zm0 8.25A2.25 2.25 0 0 1 6 12h1.5a2.25 2.25 0 0 1 2.25 2.25v1.5A2.25 2.25 0 0 1 7.5 18H6a2.25 2.25 0 0 1-2.25-2.25v-1.5ZM12 6.75A2.25 2.25 0 0 1 14.25 4.5H15.75A2.25 2.25 0 0 1 18 6.75V8.25A2.25 2.25 0 0 1 15.75 10.5H14.25A2.25 2.25 0 0 1 12 8.25V6.75Zm0 8.25A2.25 2.25 0 0 1 14.25 12H15.75A2.25 2.25 0 0 1 18 14.25v1.5A2.25 2.25 0 0 1 15.75 18H14.25A2.25 2.25 0 0 1 12 15.75v-1.5Z" />
+        </svg>
+      </button>
+
+      <div
+        class="absolute right-0 mt-2 w-[420px] rounded-2xl bg-white/90 p-4 shadow-xl ring-1 ring-black/5 backdrop-blur-md transition dark:bg-slate-900/90"
+        [class.hidden]="!panelOpen()"
+        role="dialog"
+        aria-label="Módulos disponibles"
+      >
+        <p class="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">Módulos</p>
+        <div class="grid grid-cols-4 gap-3">
+          <a
+            *ngFor="let module of modules"
+            href="#"
+            class="group flex flex-col items-center rounded-xl p-3 transition hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <div
+              class="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br text-white shadow"
+              [ngClass]="module.gradient"
+              [innerHTML]="iconSvg(module.icon)"
+              aria-hidden="true"
+            ></div>
+            <span class="mt-2 text-xs font-medium text-slate-700 dark:text-slate-200">{{ module.name }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <ui-button
+      variant="ghost"
+      (click)="onToggleTheme()"
+      [aria-label]="mode() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+    >
+      <ui-icon [name]="mode() === 'dark' ? 'light_mode' : 'dark_mode'"></ui-icon>
+    </ui-button>
+
+    <div
+      class="size-10 overflow-hidden rounded-full bg-cover bg-center shadow-lg ring-2 ring-white/80 dark:ring-slate-700"
+      style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC_70b5l-yCx6cwyhbh8KQouk2vVTv5dFZdi6jJFyeYKQQbBqWZ7aFNNSmnrJ-xSMXQOSZXSBueDOjNNVwROurQhdqCx4AripEA8ChZpEQzN7PE-YTety6OF7U4_3jzFlzTme1MhsOseEDrUqI0vcJ1S8wf0ImP_EIL1viPQM_f-rMqbgtO3DjDUfK7TPmf1tHFird3s2mp5Zz16HN8OY0_3fAyChctCLlu_8Fu0BuZBl570HQNgpgqQnbpAHRfq53qwNBnr6B7tFxS');">
+    </div>
+  </div>
+</header>

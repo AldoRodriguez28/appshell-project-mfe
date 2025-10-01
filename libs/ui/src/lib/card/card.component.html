@@ -1,0 +1,14 @@
+<section
+  class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60 transition-colors dark:bg-slate-800 dark:ring-slate-700/60 lg:p-6"
+>
+  <header *ngIf="title || subtitle" class="mb-4 flex flex-col gap-1 lg:flex-row lg:items-center">
+    <div class="flex-1">
+      <h2 class="text-lg font-semibold text-slate-900 dark:text-white">{{ title }}</h2>
+      <p *ngIf="subtitle" class="text-sm text-slate-500 dark:text-slate-300">{{ subtitle }}</p>
+    </div>
+    <ng-content select="[card-actions]"></ng-content>
+  </header>
+  <div class="space-y-4 text-sm text-slate-600 dark:text-slate-200">
+    <ng-content></ng-content>
+  </div>
+</section>

@@ -9,15 +9,8 @@ const SIZE_CLASSES: Record<'sm' | 'md' | 'lg', string> = {
 @Component({
   selector: 'ui-icon',
   standalone: true,
-  template: `
-    <span
-      class="material-symbols-outlined leading-none"
-      [attr.aria-hidden]="ariaHidden"
-      [attr.aria-label]="ariaLabel"
-    >
-      {{ name }}
-    </span>
-  `,
+  templateUrl: './icon.component.html',
+  styleUrls: ['./icon.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconComponent {

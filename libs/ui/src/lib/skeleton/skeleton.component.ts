@@ -3,13 +3,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 @Component({
   selector: 'ui-skeleton',
   standalone: true,
-  template: `
-    <span
-      class="inline-block animate-pulse rounded-lg bg-slate-200 dark:bg-slate-700"
-      [style.width.px]="width"
-      [style.height.px]="height"
-    ></span>
-  `,
+  templateUrl: './skeleton.component.html',
+  styleUrls: ['./skeleton.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SkeletonComponent {

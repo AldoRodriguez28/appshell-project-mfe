@@ -1,0 +1,26 @@
+<section class="space-y-4">
+  <header *ngIf="title || icon" class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-300">
+    <ui-icon *ngIf="icon" [name]="icon" size="sm"></ui-icon>
+    <span class="text-lg font-semibold text-slate-900 dark:text-white">{{ title }}</span>
+  </header>
+
+  <ng-container *ngIf="state() === 'loading'; else loaded">
+    <div class="space-y-3">
+      <ui-skeleton [height]="24" [width]="180"></ui-skeleton>
+      <ui-skeleton [height]="160"></ui-skeleton>
+      <ui-skeleton [height]="160"></ui-skeleton>
+    </div>
+  </ng-container>
+
+  <ng-template #loaded>
+    <ng-container *ngIf="component(); else errorBlock" [ngComponentOutlet]="component()"></ng-container>
+  </ng-template>
+
+  <ng-template #errorBlock>
+    <ui-card title="No se pudo cargar el microfrontend">
+      <p class="text-sm text-slate-500 dark:text-slate-300">
+        {{ errorMessage() ?? 'Verifica la configuración de la federación o la URL remota.' }}
+      </p>
+    </ui-card>
+  </ng-template>
+</section>

@@ -6,7 +6,8 @@ import { DashboardLayout } from '../components/dashboard-layout/dashboard-layout
   selector: 'mfe-dashboard-entry',
   standalone: true,
   imports: [DashboardLayout],
-  template: `<app-dashboard-layout></app-dashboard-layout>`,
+  templateUrl: './remote-entry.component.html',
+  styleUrls: ['./remote-entry.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteEntryComponent {}
