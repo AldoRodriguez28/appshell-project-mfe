@@ -1,141 +1,54 @@
-<div class="flex h-full flex-col gap-6 rounded-2xl bg-white/90 px-4 py-6 shadow-lg ring-1 ring-slate-200/60 backdrop-blur dark:bg-slate-900/80 dark:ring-slate-800">
+<div
+  class="flex h-full flex-col gap-6 rounded-2xl bg-white/90 px-4 py-6 shadow-lg ring-1 ring-slate-200/60 backdrop-blur dark:bg-slate-900/80 dark:ring-slate-800">
   <div class="flex items-center justify-between">
-    <div class="flex items-center gap-3 text-lg font-semibold text-slate-800 dark:text-slate-100">
-      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 text-white">A</span>
-      <span>AppShell</span>
-    </div>
-    <button
-      *ngIf="mobileOpen"
-      type="button"
+    <!-- <div class="flex flex-col">
+      <div class="flex items-center gap-3 text-lg font-semibold text-slate-800 dark:text-slate-100">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 text-white">A</span>
+        <span>AppShell</span>
+      </div>
+      <span *ngIf="currentUser() as user" class="px-1 text-xs text-slate-500 dark:text-slate-300">Hola, {{ user.name }}</span>
+    </div> -->
+    <button *ngIf="mobileOpen" type="button"
       class="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 dark:text-slate-300 dark:hover:bg-slate-800"
-      aria-label="Cerrar menú"
-      (click)="closeMenu.emit()"
-    >
+      aria-label="Cerrar menú" (click)="closeMenu.emit()">
       <span [innerHTML]="iconSvg('close')" aria-hidden="true"></span>
     </button>
   </div>
 
   <nav aria-label="Navegación principal" class="flex-1 overflow-y-auto">
-    <div class="space-y-4">
-      <ng-container *ngIf="mainItem as main">
-        <a
-          *ngIf="main.route; else mainButton"
-          #menuItem
-          [routerLink]="main.route"
-          class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium leading-normal text-[#111418] transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-          [class.active]="isActive(main.id)"
-          [attr.data-id]="main.id"
-          (click)="onSelect(main, menuItem)"
-        >
-          <span class="text-[#111418] dark:text-slate-200" [innerHTML]="iconSvg(main.icon)" aria-hidden="true"></span>
-          <span>{{ main.label }}</span>
-        </a>
-        <ng-template #mainButton>
-          <button
-            #menuItem
-            type="button"
-            class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium leading-normal text-[#111418] transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-            [class.active]="isActive(main.id)"
-            [attr.data-id]="main.id"
-            (click)="onSelect(main, menuItem)"
-          >
-            <span class="text-[#111418] dark:text-slate-200" [innerHTML]="iconSvg(main.icon)" aria-hidden="true"></span>
-            <span>{{ main.label }}</span>
-          </button>
-        </ng-template>
-      </ng-container>
+    <div class="flex flex-col gap-4">
+      <ng-container *ngFor="let section of menuSections(); trackBy: sectionTrack">
+        <div class="flex flex-col gap-2">
+          <ng-container *ngIf="section.title as title">
+            <h2 class="px-3 text-base font-medium text-[#111418] dark:text-slate-100">{{ title }}</h2>
+          </ng-container>
 
-      <div>
-        <h2 class="px-3 text-base font-medium text-[#111418] dark:text-slate-100">Workflow Manager</h2>
-        <div class="mt-2 flex flex-col gap-2">
-          <ng-container *ngFor="let item of workflowItems">
-            <ng-container *ngIf="item.route; else workflowStatic">
-              <a
-                #menuItem
-                [routerLink]="item.route"
-                class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium leading-normal text-[#111418] transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-                [class.active]="isActive(item.id)"
-                [attr.data-id]="item.id"
-                (click)="onSelect(item, menuItem)"
-              >
-                <span class="text-[#111418] dark:text-slate-200" [innerHTML]="iconSvg(item.icon)" aria-hidden="true"></span>
-                <span>{{ item.label }}</span>
-              </a>
-            </ng-container>
-            <ng-template #workflowStatic>
-              <button
-                #menuItem
-                type="button"
+          <ng-container *ngFor="let item of section.items; trackBy: itemTrack">
+            <a *ngIf="item.kind === 'route'; else actionItem" [routerLink]="item.route"
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium leading-normal text-[#111418] transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+              [ngClass]="{ 'active text-white shadow-lg': isActive(item) }" (click)="closeMenu.emit()">
+              <span class="text-[#111418] dark:text-slate-200" *ngIf="iconSvg(item.icon); else fontIcon"
+                [innerHTML]="iconSvg(item.icon)!" aria-hidden="true"></span>
+              <ng-template #fontIcon>
+                <ui-icon [name]="item.icon" size="sm"></ui-icon>
+              </ng-template>
+              <span>{{ item.label }}</span>
+            </a>
+            <ng-template #actionItem>
+              <button type="button"
                 class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium leading-normal text-[#111418] transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-                [class.active]="isActive(item.id)"
-                [attr.data-id]="item.id"
-                (click)="onSelect(item, menuItem)"
-              >
-                <span class="text-[#111418] dark:text-slate-200" [innerHTML]="iconSvg(item.icon)" aria-hidden="true"></span>
+                [ngClass]="{ 'active text-white shadow-lg': isActive(item) }" (click)="onAction(item)">
+                <span class="text-[#111418] dark:text-slate-200" *ngIf="iconSvg(item.icon); else fontIconAction"
+                  [innerHTML]="iconSvg(item.icon)!" aria-hidden="true"></span>
+                <ng-template #fontIconAction>
+                  <ui-icon [name]="item.icon" size="sm"></ui-icon>
+                </ng-template>
                 <span>{{ item.label }}</span>
               </button>
             </ng-template>
           </ng-container>
         </div>
-      </div>
-
-      <div class="px-3">
-        <hr class="border-slate-200/70 dark:border-slate-700/70" />
-      </div>
-
-      <div>
-        <h2 class="px-3 text-base font-medium text-[#111418] dark:text-slate-100">Opciones Dinámicas</h2>
-        <div class="mt-2 flex flex-col gap-2">
-          <button
-            *ngFor="let item of dynamicOptions"
-            #menuItem
-            type="button"
-            class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium leading-normal text-[#111418] transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-            [class.active]="isActive(item.id)"
-            [attr.data-id]="item.id"
-            (click)="onSelect(item, menuItem)"
-          >
-            <span class="text-[#111418] dark:text-slate-200" [innerHTML]="iconSvg(item.icon)" aria-hidden="true"></span>
-            <span>{{ item.label }}</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="px-3">
-        <hr class="border-slate-200/70 dark:border-slate-700/70" />
-      </div>
-
-      <div>
-        <div class="flex flex-col gap-2">
-          <button
-            *ngFor="let item of otherOptions"
-            #menuItem
-            type="button"
-            class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium leading-normal text-[#111418] transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-            [class.active]="isActive(item.id)"
-            [attr.data-id]="item.id"
-            (click)="onSelect(item, menuItem)"
-          >
-            <span class="text-[#111418] dark:text-slate-200" [innerHTML]="iconSvg(item.icon)" aria-hidden="true"></span>
-            <span>{{ item.label }}</span>
-          </button>
-        </div>
-      </div>
+      </ng-container>
     </div>
   </nav>
-
-  <div class="flex flex-col gap-1">
-    <button
-      *ngFor="let item of utilityItems"
-      #menuItem
-      type="button"
-      class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium leading-normal text-[#111418] transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-      [class.active]="isActive(item.id)"
-      [attr.data-id]="item.id"
-      (click)="onSelect(item, menuItem)"
-    >
-      <span class="text-[#111418] dark:text-slate-200" [innerHTML]="iconSvg(item.icon)" aria-hidden="true"></span>
-      <span>{{ item.label }}</span>
-    </button>
-  </div>
 </div>

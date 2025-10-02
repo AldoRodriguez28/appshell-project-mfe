@@ -1,186 +1,77 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, QueryList, SimpleChanges, ViewChildren, inject, signal } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, HostListener, Input, Output, inject } from '@angular/core';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Router, NavigationEnd, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs/operators';
 
-import { DashboardIconName, DASHBOARD_ICONS } from '../dashboard-icons';
-import { NavItem } from '../navigation';
+import { IconComponent } from '@appshell/ui';
 
-interface SidebarNavItem {
-  id: string;
-  label: string;
-  icon: DashboardIconName;
-  route?: string;
-}
+import { AppStateService } from '../../core/services/app-state.service';
+import { DASHBOARD_ICONS, DashboardIconName } from '../dashboard-icons';
+import { MenuItem, MenuSection } from '../../shared/models/menu-item.model';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [NgFor, NgIf, RouterLink],
+  imports: [NgClass, NgFor, NgIf, RouterLink, IconComponent],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SidebarComponent implements OnChanges, AfterViewInit {
-  @Input() items: NavItem[] = [];
+export class SidebarComponent {
   @Input() mobileOpen = false;
   @Output() closeMenu = new EventEmitter<void>();
 
-  @ViewChildren('menuItem', { read: ElementRef })
-  private readonly menuItems!: QueryList<ElementRef<HTMLElement>>;
-
-  protected mainItem: SidebarNavItem | null = null;
-  protected workflowItems: SidebarNavItem[] = [];
-  protected readonly dynamicOptions: SidebarNavItem[] = [
-    { id: 'create-order', label: 'Crear Orden', icon: 'create' },
-    { id: 'search-order', label: 'Buscar Orden', icon: 'search' },
-    { id: 'close-order', label: 'Cerrar Orden', icon: 'close' }
-  ];
-  protected readonly otherOptions: SidebarNavItem[] = [
-    { id: 'sales', label: 'Sales', icon: 'sales' },
-    { id: 'marketing-secondary', label: 'Marketing', icon: 'marketing' },
-    { id: 'operations', label: 'Operations', icon: 'operations' },
-    { id: 'analytics', label: 'Analytics', icon: 'analytics' }
-  ];
-  protected readonly utilityItems: SidebarNavItem[] = [
-    { id: 'settings', label: 'Settings', icon: 'settings' },
-    { id: 'help', label: 'Help', icon: 'help' }
-  ];
-
-  protected readonly activeId = signal<string>('');
-
-  private activeElement?: HTMLElement;
-  private readonly iconCache = new Map<DashboardIconName, SafeHtml>();
+  private readonly appState = inject(AppStateService);
   private readonly router = inject(Router);
-  private readonly sanitizer = inject(DomSanitizer);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly sanitizer = inject(DomSanitizer);
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if ('items' in changes) {
-      this.initializeNavItems();
-      queueMicrotask(() => this.updateActiveFromRouter());
-    }
-  }
+  protected readonly menuSections = this.appState.menuSections;
+  protected readonly activeModule = this.appState.activeModule;
+  protected readonly currentUser = this.appState.currentUser;
+  protected readonly menuItems = this.appState.menuItems;
 
-  ngAfterViewInit(): void {
-    this.initializeNavItems();
-    this.updateActiveFromRouter();
+  private readonly iconCache = new Map<string, SafeHtml>();
 
+  protected readonly sectionTrack = (_: number, section: MenuSection) => section.id;
+  protected readonly itemTrack = (_: number, item: MenuItem) => item.id;
+
+  constructor() {
     this.router.events
-      .pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe(() => this.updateActiveFromRouter());
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd), takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => this.appState.setActiveModuleByRoute(event.urlAfterRedirects));
 
-    setTimeout(() => this.applyShiftToActive(), 0);
+    this.appState.setActiveModuleByRoute(this.router.url);
   }
 
-  protected isActive(id: string): boolean {
-    return this.activeId() === id;
+  protected isActive(item: MenuItem): boolean {
+    return this.activeModule()?.id === item.id;
   }
 
-  protected onSelect(item: SidebarNavItem, element: HTMLElement): void {
-    this.activeId.set(item.id);
-    this.updateActiveElement(item.id, element);
+  protected onAction(item: MenuItem): void {
+    this.appState.setActiveModuleById(item.id);
+  }
 
-    if (this.mobileOpen && item.route) {
+  protected iconSvg(icon: string): SafeHtml | null {
+    const key = icon as DashboardIconName;
+    const svg = DASHBOARD_ICONS[key];
+    if (!svg) {
+      return null;
+    }
+
+    if (!this.iconCache.has(icon)) {
+      this.iconCache.set(icon, this.sanitizer.bypassSecurityTrustHtml(svg));
+    }
+
+    return this.iconCache.get(icon)!;
+  }
+
+  @HostListener('keydown.escape')
+  protected onEscape(): void {
+    if (this.mobileOpen) {
       this.closeMenu.emit();
     }
-  }
-
-  @HostListener('window:resize')
-  onResize(): void {
-    if (this.activeElement) {
-      this.applyShift(this.activeElement);
-    }
-  }
-
-  private initializeNavItems(): void {
-    if (!this.items?.length) {
-      return;
-    }
-
-    const [first, ...rest] = this.items;
-    this.mainItem = this.toSidebarItem(first);
-    this.workflowItems = rest.map((item) => this.toSidebarItem(item));
-  }
-
-  private toSidebarItem(item: NavItem): SidebarNavItem {
-    const iconMap: Record<string, DashboardIconName> = {
-      dashboard: 'dashboard',
-      checklist: 'tasks',
-      shield_person: 'shield',
-      campaign: 'marketing'
-    };
-
-    const icon = iconMap[item.icon] ?? 'dashboard';
-    return { id: item.route, label: item.label, icon, route: item.route };
-  }
-
-  protected iconSvg(name: DashboardIconName): SafeHtml {
-    let cached = this.iconCache.get(name);
-    if (!cached) {
-      cached = this.sanitizer.bypassSecurityTrustHtml(DASHBOARD_ICONS[name]);
-      this.iconCache.set(name, cached);
-    }
-    return cached;
-  }
-
-  private updateActiveFromRouter(): void {
-    const url = this.router.url.split('?')[0];
-    const candidates = [this.mainItem, ...this.workflowItems].filter((item): item is SidebarNavItem => !!item);
-    const match = candidates.find((item) => item.route && url.startsWith(item.route));
-    if (match) {
-      this.activeId.set(match.id);
-      this.updateActiveElement(match.id);
-    }
-  }
-
-  private updateActiveElement(id: string, element?: HTMLElement): void {
-    const host = element ?? this.findElementById(id);
-    if (!host) {
-      return;
-    }
-
-    if (this.activeElement && this.activeElement !== host) {
-      this.activeElement.style.setProperty('--active-shift', '0px');
-    }
-
-    this.activeElement = host;
-    this.applyShift(host);
-  }
-
-  private findElementById(id: string): HTMLElement | undefined {
-    const elements = this.menuItems?.toArray().map((ref) => ref.nativeElement) ?? [];
-    return elements.find((el) => el.dataset['id'] === id);
-  }
-
-  private applyShiftToActive(): void {
-    if (this.activeElement) {
-      this.applyShift(this.activeElement);
-    }
-  }
-
-  private applyShift(element: HTMLElement): void {
-    const delta = this.computeShift(element);
-    element.style.setProperty('--active-shift', `${delta}px`);
-  }
-
-  private computeShift(container: HTMLElement): number {
-    const rect = container.getBoundingClientRect();
-    const children = Array.from(container.children) as HTMLElement[];
-    if (!children.length) {
-      return 0;
-    }
-
-    const left = Math.min(...children.map((child) => child.getBoundingClientRect().left));
-    const right = Math.max(...children.map((child) => child.getBoundingClientRect().right));
-    const groupWidth = right - left;
-    const leftOffset = left - rect.left;
-    const desiredLeft = (rect.width - groupWidth) / 2;
-    return desiredLeft - leftOffset;
   }
 }

@@ -1,6 +1,7 @@
 import { NgComponentOutlet, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, Input, OnInit, Type, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AppStateService } from '../../core/services/app-state.service';
 import { loadRemoteModule } from '@angular-architects/native-federation';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { from } from 'rxjs';
@@ -16,6 +17,7 @@ import { CardComponent, IconComponent, SkeletonComponent } from '@appshell/ui';
 })
 export class RemoteContainerComponent implements OnInit {
   @Input() remoteName?: string;
+  @Input() moduleId?: string;
   @Input() title?: string;
   @Input() icon?: string;
 
@@ -24,11 +26,17 @@ export class RemoteContainerComponent implements OnInit {
   protected readonly state = signal<'loading' | 'ready'>('loading');
 
   private readonly destroyRef = inject(DestroyRef);
+  private readonly appState = inject(AppStateService);
 
   constructor(private readonly route: ActivatedRoute) {}
 
   ngOnInit(): void {
     const data = this.route.snapshot.data as Record<string, string | undefined>;
+    const moduleId = this.moduleId ?? data['moduleId'];
+    if (moduleId) {
+      this.appState.setActiveModuleById(moduleId);
+    }
+
     this.remoteName ??= data['remoteName'];
     this.title ??= data['title'];
     this.icon ??= data['icon'];
