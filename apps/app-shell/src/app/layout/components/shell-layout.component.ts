@@ -2,7 +2,6 @@ import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { NAV_ITEMS } from '../navigation';
 import { HeaderComponent } from './header.component';
 import { SidebarComponent } from './sidebar.component';
 
@@ -15,7 +14,6 @@ import { SidebarComponent } from './sidebar.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShellLayoutComponent {
-  readonly navItems = NAV_ITEMS;
   readonly mobileSidebarOpen = signal(false);
 
   toggleSidebar(force?: boolean): void {
